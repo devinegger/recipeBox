@@ -48,4 +48,15 @@ class Recipe {
  
         return static::all()->firstWhere('id', $id);
     }
+
+    public static function findOrFail($id) {
+
+        $recipe = static::find($id);
+
+        if(!$recipe) {
+            throw new ModelNotFoundException();
+        }
+ 
+        return $recipe;
+    }
 }

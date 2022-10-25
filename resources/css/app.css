@@ -2,6 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
+
 body {
     background-color: bisque;
     padding: 2rem; 
@@ -15,4 +16,8 @@ h1 {
 
 a {
     color: maroon;
+}
+
+article {
+    @apply bg-stone-50 mb-4 p-6 rounded-md shadow-md;
 }

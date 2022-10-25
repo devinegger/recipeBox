@@ -15,11 +15,9 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-
     return view('recipes', [
         'recipes' => Recipe::all()
     ]);
-
 });
 
 Route::get('/recipes', function () {
@@ -27,9 +25,7 @@ Route::get('/recipes', function () {
 });
 
 Route::get('recipe/{id}', function($id) {
-
     return view('recipe', [
-        'recipe' => Recipe::find($id)
+        'recipe' => Recipe::findOrFail($id)
     ]);
-
-})->whereNumber('id');
+});
