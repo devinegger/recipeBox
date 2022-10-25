@@ -4,22 +4,48 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\File;
+use Spatie\YamlFrontMatter\YamlFrontMatter;
 
 class Recipe {
 
-    public static function all() {
+    public $id;
 
-        $files = File::files(resource_path("recipes/"));
+    public $title;
 
-        return array_map(fn($file) => $file->getContents(), $files); 
+    public $excerpt;
+
+    public $date;
+
+    public $body;
+
+    public function __construct($id, $title, $excerpt, $date, $body) {
+        $this->id = $id;
+        $this->title = $title;
+        $this->excerpt = $excerpt;
+        $this->date = $date;
+        $this->body = $body;
     }
 
-    public static function find($slug) {
+    public static function all() {
 
-        if (!file_exists($path = resource_path("recipes/recipe-{$slug}.html"))) {
-            throw new ModelNotFoundException();
-        }
+        return cache()->rememberForever('recipes.all', function () {
+            
+            return collect(File::files(resource_path("recipes")))
+            
+            ->map(fn($file) => YamlFrontMatter::parseFile($file)) 
+                
+            ->map(fn($document) => new Recipe(
+                $document->id,
+                $document->title,
+                $document->excerpt,
+                $document->date,
+                $document->body()
+            ))->sortByDesc('date');
+        });
+    }
 
-        return cache()->remember("recipes.{$slug}", 3600, fn() => file_get_contents($path));
+    public static function find($id) {
+ 
+        return static::all()->firstWhere('id', $id);
     }
 }

@@ -19,16 +19,17 @@ Route::get('/', function () {
     return view('recipes', [
         'recipes' => Recipe::all()
     ]);
+
 });
 
 Route::get('/recipes', function () {
     return redirect('/');
 });
 
-Route::get('recipe/{id}', function($slug) {
+Route::get('recipe/{id}', function($id) {
 
     return view('recipe', [
-        'recipe' => Recipe::find($slug)
+        'recipe' => Recipe::find($id)
     ]);
 
 })->whereNumber('id');
